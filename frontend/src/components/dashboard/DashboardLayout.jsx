@@ -17,6 +17,7 @@ export default function DashboardLayout({
   onRefresh,
   refreshing,
   patientId,
+  onAddData,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("overview");
@@ -33,6 +34,7 @@ export default function DashboardLayout({
         sections={SECTIONS}
         activeSection={activeSection}
         onNavigate={scrollToSection}
+        onAddData={onAddData}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
@@ -53,6 +55,7 @@ export default function DashboardLayout({
           onMenuClick={() => setSidebarOpen(true)}
           onRefresh={onRefresh}
           refreshing={refreshing}
+          onAddData={onAddData}
         />
 
         <main id="main-content" className="flex-1 px-4 py-6 sm:px-6 lg:px-8">

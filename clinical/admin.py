@@ -7,6 +7,7 @@ from clinical.models import (
     Condition,
     MedicationStatement,
     Observation,
+    ObservationAttachment,
     PatientProfile,
     PatientUser,
 )
@@ -49,6 +50,13 @@ class ConditionAdmin(admin.ModelAdmin):
 class MedicationStatementAdmin(admin.ModelAdmin):
     list_display = ("patient", "medication_code", "status", "adherence_status", "period_start")
     list_filter = ("status", "adherence_status")
+
+
+@admin.register(ObservationAttachment)
+class ObservationAttachmentAdmin(admin.ModelAdmin):
+    list_display = ("id", "patient", "capture_source", "uploaded_at", "observation")
+    list_filter = ("capture_source",)
+    readonly_fields = ("fhir_id", "uploaded_at", "file_size_bytes")
 
 
 @admin.register(AuditLog)

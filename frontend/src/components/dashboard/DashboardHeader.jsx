@@ -1,4 +1,4 @@
-export default function DashboardHeader({ stats, patientId, onMenuClick, onRefresh, refreshing }) {
+export default function DashboardHeader({ stats, patientId, onMenuClick, onRefresh, refreshing, onAddData }) {
   const today = new Intl.DateTimeFormat(undefined, {
     weekday: "long",
     month: "long",
@@ -28,6 +28,15 @@ export default function DashboardHeader({ stats, patientId, onMenuClick, onRefre
         </div>
 
         <div className="flex items-center gap-3">
+          {onAddData && (
+            <button
+              type="button"
+              onClick={onAddData}
+              className="hidden rounded-xl border border-clinical-600 px-4 py-2.5 text-sm font-semibold text-clinical-700 hover:bg-clinical-50 sm:inline-flex dark:border-clinical-400 dark:text-clinical-300"
+            >
+              + Add data
+            </button>
+          )}
           {stats?.lastUpdated && stats.lastUpdated !== "—" && (
             <p className="hidden text-sm text-slate-500 sm:block">
               Updated {stats.lastUpdated}

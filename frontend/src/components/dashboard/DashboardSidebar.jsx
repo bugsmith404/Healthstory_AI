@@ -31,7 +31,7 @@ const ICONS = {
   ),
 };
 
-export default function DashboardSidebar({ sections, activeSection, onNavigate, open }) {
+export default function DashboardSidebar({ sections, activeSection, onNavigate, onAddData, open }) {
   return (
     <aside
       className={`dashboard-sidebar fixed inset-y-0 left-0 z-40 w-64 transform border-r border-clinical-700/20 bg-story-trust text-white transition-transform duration-200 lg:translate-x-0 ${
@@ -67,6 +67,18 @@ export default function DashboardSidebar({ sections, activeSection, onNavigate, 
             );
           })}
         </nav>
+
+        {onAddData && (
+          <div className="px-3 pb-3">
+            <button
+              type="button"
+              onClick={onAddData}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-clinical-500 px-4 py-3 text-sm font-bold text-white shadow-lg hover:bg-clinical-400"
+            >
+              + Add health data
+            </button>
+          </div>
+        )}
 
         <div className="border-t border-white/10 px-5 py-4 text-xs text-clinical-200/90">
           <p>HIPAA-minded secure view</p>

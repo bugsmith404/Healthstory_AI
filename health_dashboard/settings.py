@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get(
     "dev-only-change-in-production-use-env-var",
 )
 
-DEBUG = os.environ.get("DJANGO_DEBUG", "false").lower() == "true"
+DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
@@ -110,6 +110,13 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# Max upload size for camera captures (5 MB)
+MAX_UPLOAD_IMAGE_BYTES = 5 * 1024 * 1024
+ALLOWED_UPLOAD_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # AES-256 field encryption key (32 bytes, base64-encoded for env transport)

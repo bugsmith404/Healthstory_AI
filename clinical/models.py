@@ -610,3 +610,62 @@ class AuditLog(models.Model):
 
     def __str__(self) -> str:
         return f"AuditLog<{self.action} {self.resource_type}/{self.resource_id}>"
+
+
+# ---------------------------------------------------------------------------
+# ObservationAttachment (FHIR DocumentReference — camera / file uploads)
+# ---------------------------------------------------------------------------
+
+def patient_upload_path(instance: "ObservationAttachment", filename: str) -> str:
+    """Store uploads in patient-scoped paths for RBAC isolation."""
+    return f"patient_{instance.patient_id}/observations/{filename}"
+
+
+class CaptureSource(models.TextChoices):
+    CAMERA = "camera", "Camera"
+    FILE = "file", "File upload"
+
+
+class ObservationAttachment(models.Model):
+    """
+    Image captured from the patient portal camera or file picker, optionally
+    linked to a numeric Observation created in the same submission.
+    """
+
+    patient = models.ForeignKey(
+        PatientUser,
+        on_delete=models.CASCADE,
+        related_name="observation_attachments",
+        db_index=True,
+    )
+    observation = models.ForeignKey(
+        Observation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attachments",
+    )
+    fhir_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    image = models.ImageField(upload_to=patient_upload_path)
+    capture_source = models.CharField(
+        max_length=16,
+        choices=CaptureSource.choices,
+        default=CaptureSource.CAMERA,
+    )
+    original_filename = models.CharField(max_length=256, blank=True, default="")
+    mime_type = models.CharField(max_length=64, blank=True, default="image/jpeg")
+    file_size_bytes = models.PositiveIntegerField(default=0)
+
+    caption = EncryptedCharField(max_length=256, blank=True, default="")
+    uploaded_at = models.DateTimeField(default=timezone.now, db_index=True)
+
+    class Meta:
+        db_table = "clinical_observation_attachment"
+        ordering = ["-uploaded_at"]
+        indexes = [
+            models.Index(fields=["patient", "uploaded_at"], name="idx_attach_patient_ts"),
+        ]
+
+    def __str__(self) -> str:
+        return f"Attachment<{self.pk}> patient={self.patient_id}"

@@ -13,7 +13,7 @@ import { useRiskAssessment } from "../hooks/useRiskAssessment";
 import { useTimeline } from "../hooks/useTimeline";
 import { buildDashboardStats } from "../utils/dashboardStats";
 
-export default function Dashboard() {
+export default function Dashboard({ onAddData }) {
   const timeline = useTimeline({ types: "observation,condition,medication" });
   const healthStory = useHealthStory(24);
   const risk = useRiskAssessment();
@@ -54,6 +54,7 @@ export default function Dashboard() {
         patientId={timeline.data?.patient_id}
         onRefresh={handleRefresh}
         refreshing={refreshing}
+        onAddData={onAddData}
       >
         {({ scrollToSection }) => (
           <div className="mx-auto max-w-7xl space-y-10">
